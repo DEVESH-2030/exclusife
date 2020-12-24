@@ -8,6 +8,8 @@ class LoginUser extends Model
 {
     protected $table = "login_users";
     protected $fillable = [
-        'mobile', 'password','active'
+        'mobile', 
+        'password', 
+        'active'
     ];
 }
