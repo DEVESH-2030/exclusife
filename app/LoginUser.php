@@ -9,7 +9,12 @@ class LoginUser extends Model
     protected $table = "login_users";
     protected $fillable = [
         'mobile', 
-        'password', 
-        'active'
+        'password',
+        'otp',
+        'email',
+        'verify_otp', 
+        'active',
+        'created_at',
+        'updated_at'	
     ];
 }

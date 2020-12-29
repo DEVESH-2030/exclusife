@@ -8,6 +8,6 @@ class Customer extends Model
 {
     protected $table = "customers";
     protected $fillable = [
-        'mobile_no', 'email'
+        'mobile_no', 'email', 'avtive'
     ];
 }

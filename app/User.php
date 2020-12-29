@@ -34,5 +34,9 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function upcomingdob(Request $request)
+    {
+        $this->belongsTo('App\Models\UpcomingDOB', 'user_id', 'id');
+    }
 
 }

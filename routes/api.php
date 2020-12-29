@@ -12,18 +12,17 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-//routing for login register
+#routing for login 
 Route::post('login', 'API\UserController@login');
-Route::post('register', 'API\UserController@register');
-
-//routing for product
+# add and register new customer
+Route::post('AddnRegisternewCustomer', 'API\UserController@AddnRegisternewCustomer');
+#routing for product
 Route::post('products', 'API\ProductController@createProduct');
-
-//routing for customer
+#routing for customer
 Route::post('addcustomer', 'API\UserController@AddCustomer');
+# view customer
 Route::get('viewcustomer', 'API\UserController@ViewCustomer');
-
-//routing for createrequest
+#routing for createrequest
 Route::post('createrequest', 'API\UserController@CreateRequest');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
@@ -32,3 +31,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('getusers','UserController@getusers');
+# otp varification
+// Route::post('OtpVerificationforLogin', 'API\UserController@OtpVerificationforLogin');
+# otp verify  done
+Route::post('otpverificationForLogin', 'API\UserController@otpverificationForLogin');
+#add Customers
+Route::post('AddCustomer', 'API\UserController@AddCustomer');
+# admin Register 
+Route::post('AdminRegister', 'API\UserController@AdminRegister');
+# get details of aproved customers
+Route::get('whiteList', 'API\UserController@whiteList');
+# total customer
+Route::get('countTotalcustomres', 'API\UserController@countTotalcustomres');
