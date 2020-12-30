@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Admin' => $baseDir . '/app/Admin.php',
+    'App\\CallLogs' => $baseDir . '/app/CallLogs.php',
     'App\\Category' => $baseDir . '/app/Category.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\CreateRequest' => $baseDir . '/app/CreateRequest.php',
@@ -32,14 +33,13 @@ return array(
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
     'App\\Http\\Resources\\UserResource' => $baseDir . '/app/Http/Resources/UserResource.php',
     'App\\LoginUser' => $baseDir . '/app/LoginUser.php',
-    'App\\Models\\CallLogs' => $baseDir . '/app/Models/CallLogs.php',
-    'App\\Models\\UpcomingDOB' => $baseDir . '/app/Models/UpcomingDOB.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'App\\Providers\\AuthServiceProvider' => $baseDir . '/app/Providers/AuthServiceProvider.php',
     'App\\Providers\\BroadcastServiceProvider' => $baseDir . '/app/Providers/BroadcastServiceProvider.php',
     'App\\Providers\\EventServiceProvider' => $baseDir . '/app/Providers/EventServiceProvider.php',
     'App\\Providers\\RouteServiceProvider' => $baseDir . '/app/Providers/RouteServiceProvider.php',
     'App\\Taxtype' => $baseDir . '/app/Taxtype.php',
+    'App\\UpcomingDOB' => $baseDir . '/app/UpcomingDOB.php',
     'App\\User' => $baseDir . '/app/User.php',
     'App\\product' => $baseDir . '/app/product.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',

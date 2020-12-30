@@ -15,6 +15,8 @@ use App\LoginUser;
 use App\CallLogs;
 # use upcoming dob
 use App\UpcomingDOB;
+
+use Carbon\Carbon;
 # use createrequest model
 use App\CreateRequest;
 # use request paskage 
@@ -350,17 +352,17 @@ class UserController extends Controller
 
     # ---Registration API ---
     public function AddnRegisternewCustomer(Request $request) 
-    { 
+    {
         # request data from database 
         $name       = $request->name;
         $email      = $request->email;
-        $password   = $request->password;
+        // $password   = $request->password;
         $mobile     = $request->mobile;
         $gender     = $request->gender;
-        $dob        = $request->dob;
-        $anniversary= $request->anniversary;
+        $dob        = date('Y-m-d', strtotime( str_replace('/', '-', $request->dob)));
+        $anniversary= date('Y-m-d', strtotime( str_replace('/', '-', $request->anniversary)));
         $comment    = $request->comment;
-        $status     = $request->status;
+        // $status     = $request->status;
 
         # if you does not input/enter any data then give response here different type as.   
         if(empty($name))
@@ -374,13 +376,15 @@ class UserController extends Controller
                 'responseMessage'   => 'please enter user email',
                 'responseCode'      => $this->failedStatus,
             ]);
-        }elseif (empty($password)) {
-            return response()->json([
-                'responseMessage'   => 'please enter user password',
-                'responseCode'      => $this->failedStatus,              
+        }
+        // elseif (empty($password)) {
+        //     return response()->json([
+        //         'responseMessage'   => 'please enter user password',
+        //         'responseCode'      => $this->failedStatus,              
 
-            ]);
-        }elseif(empty($mobile)) {
+        //     ]);
+        // }
+        elseif(empty($mobile)) {
             return response()->json([
                 'responseMessage'   => 'please enter mobile',
                 'responseCode'      => $this->failedStatus,
@@ -405,25 +409,26 @@ class UserController extends Controller
                 'responseMessage'   => 'please enter comment',
                 'responseCode'      => $this->failedStatus,
             ]);           
-        }elseif (empty($status)) {
-            return response()->json([
-                'responseMessage'   => 'please enter status',
-                'responseCode'      => $this->failedStatus,
-            ]);           
         }
+        // elseif (empty($status)) {
+        //     return response()->json([
+        //         'responseMessage'   => 'please enter status',
+        //         'responseCode'      => $this->failedStatus,
+        //     ]);           
+        // }
+        
         # Create object of use
         $user = new User;
         # store data into user database
         $user->name         =$name;
         $user->email        =$email;
-        $user->password     =Hash::make($password);
+        // $user->password     =Hash::make($password);
         $user->mobile       =$mobile;
         $user->gender       =$gender;
         $user->dob          =$dob;
         $user->anniversary  =$anniversary;
         $user->comment      =$comment;
-        $user->status       =$status;
-        
+        // $user->status       =$status;
         $countUser = User::where(['email'=> $email])->count();   #email for already exixst
         if ($countUser == 0) {
             # token generate for password     
@@ -436,7 +441,9 @@ class UserController extends Controller
                     'name'      => $user->name ?? '',
                     'email'     => $user->email ?? '',
                     'mobile'    => $user->mobile ?? '',
-                    'password'  => $user->password ?? '',
+                    // 'password'  => $user->password ?? '',
+                    'dob'       => date('d/m/Y', strtotime($user->dob)),
+                    'anniversary' => date('d/m/Y', strtotime($user->anniversary)),
                     'token'     => $userToken,                       
             ];
             # give rosponse success  

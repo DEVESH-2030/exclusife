@@ -501,6 +501,7 @@ class ComposerStaticInit238969f41fc263d7ba5bebb2a87f29c4
 
     public static $classMap = array (
         'App\\Admin' => __DIR__ . '/../..' . '/app/Admin.php',
+        'App\\CallLogs' => __DIR__ . '/../..' . '/app/CallLogs.php',
         'App\\Category' => __DIR__ . '/../..' . '/app/Category.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\CreateRequest' => __DIR__ . '/../..' . '/app/CreateRequest.php',
@@ -526,14 +527,13 @@ class ComposerStaticInit238969f41fc263d7ba5bebb2a87f29c4
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Http\\Resources\\UserResource' => __DIR__ . '/../..' . '/app/Http/Resources/UserResource.php',
         'App\\LoginUser' => __DIR__ . '/../..' . '/app/LoginUser.php',
-        'App\\Models\\CallLogs' => __DIR__ . '/../..' . '/app/Models/CallLogs.php',
-        'App\\Models\\UpcomingDOB' => __DIR__ . '/../..' . '/app/Models/UpcomingDOB.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',
         'App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/app/Providers/EventServiceProvider.php',
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
         'App\\Taxtype' => __DIR__ . '/../..' . '/app/Taxtype.php',
+        'App\\UpcomingDOB' => __DIR__ . '/../..' . '/app/UpcomingDOB.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
         'App\\product' => __DIR__ . '/../..' . '/app/product.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
