@@ -43,3 +43,7 @@ Route::post('AdminRegister', 'API\UserController@AdminRegister');
 Route::get('whiteList', 'API\UserController@whiteList');
 # total customer
 Route::get('countTotalcustomres', 'API\UserController@countTotalcustomres');
+# use Resend OTP
+Route::post('resendOtp', 'API\UserController@resendOtp');
+Route::get('callLog', 'API\UserController@callLog');
+Route::get('upcomingDateofBirth', 'API\UserController@upcomingDateofBirth');

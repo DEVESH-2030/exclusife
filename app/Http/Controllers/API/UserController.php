@@ -12,9 +12,9 @@ use App\Customer;
 # use loginuser model 
 use App\LoginUser;
 # use calllog model
-use App\Models\CallLogs;
+use App\CallLogs;
 # use upcoming dob
-use App\Models\UpcomingDOB;
+use App\UpcomingDOB;
 # use createrequest model
 use App\CreateRequest;
 # use request paskage 
@@ -42,7 +42,7 @@ class UserController extends Controller
     protected $loginuser;
     protected $createrequest;
     protected $calllog;
-    protected $upcomingdob
+    protected $upcomingdob;
 
     function __construct(User $user, LoginUser $loginuser, Customer $customer, CreateRequest $createrequest, CallLogs $calllog, UpcomingDOB $upcomingdob)
     {
@@ -52,6 +52,7 @@ class UserController extends Controller
         $this->createrequest= $createrequest;
         $this->calllog      = $calllog;
         $this->upcomingdob  = $upcomingdob;
+
     }
 /**
      * login api
@@ -249,6 +250,49 @@ class UserController extends Controller
     #  -------  End SendSMS Api completed -------
 
 
+    # API for Resend OTP on user/customer Mobile number which stored in database
+    public function resendOtp(Request $request)
+    {   
+       
+        # get mobile first
+        $loginuser = LoginUser::first();
+        if($loginuser)
+        {
+            # check epassword and then create token pass..     
+           
+            $mobile = $loginuser->mobile;
+            $otp = rand('1000','9999');
+            // $otp = $this->sendSms($mobile);
+            $updateotp = LoginUser::where('mobile',$mobile)->update(['otp' => $otp]);
+            $loginuser->save();
+            if($updateotp)
+            {
+                # get data in array
+                $data[] = [
+
+                    'id'          => (String)$loginuser->id ?? '',
+                    'mobile'      => $loginuser->mobile ?? '',
+                    'otp'         => $otp ?? '',
+                ];
+                # give response success
+                return response()->json([
+                    'responseMessage' => 'Resend otp on your mobile successfully', 
+                    'responseCode'    => $this->successStatus,
+                    'result'          => $data,
+                ]);
+            }
+            # give response if wrong password
+            else {
+                return response()->json([
+                    'responseMessage'   => 'something went wrong',
+                    'responseCode'      => $this->failedStatus,
+                ]);                
+            }
+        }
+    }
+    # End here resend otp
+
+
     # OTP Verification 
     public function otpverificationForLogin(Request $request)
     {
@@ -301,7 +345,7 @@ class UserController extends Controller
         }
     }
 
-        #-------------
+    # End here OTP verification
 
 
     # ---Registration API ---
@@ -410,10 +454,10 @@ class UserController extends Controller
             ]); 
         }
     }
-    # ------ End register ------
+    # End here user/customer register 
 
 
-    //add customer into customer list
+    # add customer into customer list
     public function AddCustomer(Request $request)
     {
         //validating one of twi field at a time
@@ -468,6 +512,8 @@ class UserController extends Controller
                ]);
             }
      }
+     # End here add customer api
+
 
     # view all data of customers
     public function ViewCustomer()
@@ -529,10 +575,11 @@ class UserController extends Controller
                     'responseCode'    =>  $this->failedStatus,
                     'data'            =>  [],
                    ]);
-
             }
-
     }
+    # End here View details of user/customer
+
+
 
     # Api for Whitelist detail of customers
     public function whiteList(Request $request)
@@ -554,17 +601,17 @@ class UserController extends Controller
             'result'            => $whitelist,
         ]);
     }
-    # End here
+    # End here whitelist 
 
     # Count Total Customers
     public function countTotalcustomres(Request $request)
     {   
         $total = $this->user::count();
-        $whitelistDetails = $this->user::get();
-        $whitelist = [];
-        foreach ($whitelistDetails as $data) 
+        $totalcustomerDetails = $this->user::get();
+        $totalcustomre = [];
+        foreach ($totalcustomerDetails as $data) 
         {
-            $whitelist[] = [
+            $totalcustomre[] = [
                 'id'        => $data->id ?? '',
                 'mobile'    => $data->mobile ?? '',
                 'status'    => $data->status ?? '',
@@ -574,10 +621,10 @@ class UserController extends Controller
             'responseMessage'   => 'Count Total customers',
             'responseCode'      => $this->successStatus,
             'total'             => $total,
-            'result'            => $whitelist,
+            'result'            => $totalcustomre,
         ]);
     }
-    # End here
+    # End here count total customer 
 
     # api for call log detials
     public function callLog(Request $request)
@@ -588,6 +635,6 @@ class UserController extends Controller
 
     public function upcomingDateofBirth(Request $request)
     {
-
+        //
     }
 }

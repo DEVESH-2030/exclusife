@@ -36,7 +36,7 @@ class User extends Authenticatable
 
     public function upcomingdob(Request $request)
     {
-        $this->belongsTo('App\Models\UpcomingDOB', 'user_id', 'id');
+        $this->belongsTo('App\UpcomingDOB', 'user_id', 'id');
     }
 
 }

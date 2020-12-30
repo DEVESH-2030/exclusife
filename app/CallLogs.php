@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
 class CallLogs extends Model
 {
-	protected $table = '';
+	protected $table = 'call_logs';
     protected $fillable = [
     	'mobile',
     	'call_duration',
@@ -18,3 +18,6 @@ class CallLogs extends Model
     	'updated_at',
     ];
 }
+
+
+

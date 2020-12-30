@@ -527,6 +527,7 @@ class ComposerStaticInit238969f41fc263d7ba5bebb2a87f29c4
         'App\\Http\\Resources\\UserResource' => __DIR__ . '/../..' . '/app/Http/Resources/UserResource.php',
         'App\\LoginUser' => __DIR__ . '/../..' . '/app/LoginUser.php',
         'App\\Models\\CallLogs' => __DIR__ . '/../..' . '/app/Models/CallLogs.php',
+        'App\\Models\\UpcomingDOB' => __DIR__ . '/../..' . '/app/Models/UpcomingDOB.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',
