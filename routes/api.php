@@ -45,5 +45,19 @@ Route::get('whiteList', 'API\UserController@whiteList');
 Route::get('countTotalcustomres', 'API\UserController@countTotalcustomres');
 # use Resend OTP
 Route::post('resendOtp', 'API\UserController@resendOtp');
+# call logs 
 Route::get('callLog', 'API\UserController@callLog');
-Route::get('upcomingDateofBirth', 'API\UserController@upcomingDateofBirth');
+# upcoming birthday 
+Route::any('upcomingDateofBirth', 'API\UserController@upcomingDateofBirth');
+# add category 
+Route::post('addCategory', 'API\UserController@addCategory');
+# Category list 
+Route::get('categoryList', 'API\UserController@categoryList');
+# Get Details of User or Customer
+Route::any('UserOrCustomerDetails', 'API\UserController@UserOrCustomerDetails');
+# Create Announcement and store 
+Route::post('CreateAnnouncement', 'API\UserController@CreateAnnouncement');
+# Get Announcement Details 
+Route::get('AnnouncementDetails', 'API\UserController@AnnouncementDetails');
+# total Announcement
+Route::get('totalannouncemet', 'API\UserController@totalannouncemet');

@@ -5,17 +5,22 @@ namespace App\Http\Controllers\API;
 use DB;
 # use model
 use App\User;
+# use Category model
+use App\Category;
 # use validator
 use Validator;
 # use customer model
 use App\Customer;
+
 # use loginuser model 
 use App\LoginUser;
 # use calllog model
 use App\CallLogs;
 # use upcoming dob
 use App\UpcomingDOB;
-
+# use Announcement model
+use App\Announcement;
+# use carbon 
 use Carbon\Carbon;
 # use createrequest model
 use App\CreateRequest;
@@ -39,22 +44,28 @@ class UserController extends Controller
     protected $successStatus = '200';
     protected $failedStatus = '0';
 
+    # Variavle name defined here of models
     protected $user;
+    protected $category;
     protected $customer;
     protected $loginuser;
     protected $createrequest;
     protected $calllog;
     protected $upcomingdob;
+    protected $announcement;
 
-    function __construct(User $user, LoginUser $loginuser, Customer $customer, CreateRequest $createrequest, CallLogs $calllog, UpcomingDOB $upcomingdob)
+    # Define Constructor here
+    function __construct(User $user, Category $category, LoginUser $loginuser, Customer $customer, CreateRequest $createrequest, CallLogs $calllog, UpcomingDOB $upcomingdob, Announcement $announcement)
     {
+        # defined type casting
         $this->user         = $user;
+        $this->category     = $category;
         $this->customer     = $customer;
         $this->loginuser    = $loginuser;
         $this->createrequest= $createrequest;
         $this->calllog      = $calllog;
         $this->upcomingdob  = $upcomingdob;
-
+        $this->announcement = $announcement;
     }
 /**
      * login api
@@ -613,7 +624,9 @@ class UserController extends Controller
     # Count Total Customers
     public function countTotalcustomres(Request $request)
     {   
+        # data from user table
         $total = $this->user::count();
+        $totalannouncemet = $this->announcement::count();
         $totalcustomerDetails = $this->user::get();
         $totalcustomre = [];
         foreach ($totalcustomerDetails as $data) 
@@ -627,11 +640,15 @@ class UserController extends Controller
         return response()->json([
             'responseMessage'   => 'Count Total customers',
             'responseCode'      => $this->successStatus,
-            'total'             => $total,
+            'total_Customer'    => $total,
+            'total_Announcemet' => $totalannouncemet,
             'result'            => $totalcustomre,
         ]);
     }
     # End here count total customer 
+
+
+
 
     # api for call log detials
     public function callLog(Request $request)
@@ -640,8 +657,271 @@ class UserController extends Controller
     }
     # End here 
 
+
+    #  Get upcoming Dirthday 
     public function upcomingDateofBirth(Request $request)
     {
-        //
+      
+        // $dateFromDB = $this->user::first();
+        // dd($dateFromDB->dob);
+        #Current Date and Time
+        # 1st method to find date
+
+        // $today = \Carbon\Carbon::now(); 
+        // $upcoming = \Carbon\Carbon::tomorrow();
+        // $lastDayofMonth = \Carbon\Carbon::parse($today)->endOfMonth()->toDateString();
+        // $upcomingDayofMonth = \Carbon\Carbon::parse($upcoming)->endOfMonth()->toDateString();
+        // dd($lastDayofMonth);
+        // dd($upcomingDayofMonth);
+
+        // if($dateFromDB)
+        //  {
+        //     return response()->json([
+        //         'responseMessage'   => 'Happy Birthday Dear',
+        //         'responseCode'      => $this->successStatus,
+        //         'dob'               => $dateFromDB
+        //     ]);
+        //  }
+
+        # Find the today date
+        $today_date = date('Y-m-d');
+        # Find upcoming date into 7 days
+        $upcoming_date = date('Y-m-d', strtotime($today_date .'7days'));
+        # fet date from database and match today_date and upcoming_date and count  
+        // $findDate = $this->user->whereBetween('dob',[$today_date,$upcoming_date])->get()->count();
+        
+        # Get DOB from database and match today_date and upcoming_date 
+        $upcomingDOB = $this->user->whereBetween('dob',[$today_date,$upcoming_date])->get();
+        # define a empty array
+        $Happybirthday = [];
+        foreach ($upcomingDOB as $DateofBirth ) 
+        {
+            $Happybirthday[] = [
+                'id'    => $DateofBirth->id,
+                'name'  => $DateofBirth->name,
+            ];
+
+        }
+        # Get Anniversary Date from database and match today_date and upcoming_date 
+        $upcomingAnniversary = $this->user->whereBetween('anniversary',[$today_date,$upcoming_date])->get();
+        $HappyAnniversary = [];
+        foreach ($upcomingAnniversary as $anniversary) 
+        {
+            $HappyAnniversary[] = [
+                'id'    => $anniversary->id,
+                'name'  => $anniversary->name,
+            ];
+            
+        }
+        if($upcomingDOB && $upcomingAnniversary)
+        {
+            return response()->json([
+                'responseMessage'   => 'Happy Birthday Dear',
+                'responseCode'      => $this->successStatus,
+                'DOB'     => $upcomingDOB,
+                'happyBirthday'     => $Happybirthday,
+                'Anniversary'  => $upcomingAnniversary,
+                'happyAnniversary'  => $HappyAnniversary,
+            ]);
+        }
     }
+    # End here
+
+
+
+    # API Add Category in database when show on Dashbord
+    public function addCategory(Request $request)
+    {
+       $validator = Validator::make($request->all(), [
+            'category'  => 'required',
+            'status'    => 'required',
+       ]);  
+
+       if($validator->fails())
+       {
+            return response()->json([
+                'responseMessage'   => $validator->errors(),
+                'responseCode'      => $this->failedStatus,
+            ]);
+       }   
+
+       $category = $this->category::create($request->all());
+       // $category = $this->category::create($request->all());
+       if($category)
+       {
+            return response()->json([
+                'responseMessage'   => 'Add category succssfully',
+                'responseCode'      => $this->successStatus,
+            ]);
+       }else {
+            return response()->json([
+                'responseMessage'   => 'Something went wrong',
+                'responseCode'      => $this->failedStatus,
+            ]);
+       }
+    }
+    # End here
+
+
+    # API Get list of category
+    public function categoryList(Request $request)
+    {
+        $totalcategoryDetails = $this->category::get();
+        $totalcategory = [];
+        foreach ($totalcategoryDetails as $data) 
+        {
+            $totalcategory[] = [
+                'id'        => $data->id ?? '',
+                'category'  => $data->category ?? '',
+                'status'    => $data->status ?? '',
+            ]; 
+        }
+        return response()->json([
+            'responseMessage'   => 'Category List',
+            'responseCode'      => $this->successStatus,
+            'result'            => $totalcategory,
+        ]);
+    }
+    # End here
+
+
+        # ------ Get Profile/ account details Api ------
+    public function UserOrCustomerDetails(Request $request)
+    {   
+        # use required
+        $validator = Validator::make($request->all(), [
+            'mobile'  => 'required',
+        ]);  
+       if($validator->fails())
+       {
+            return response()->json([
+                'responseMessage'   => $validator->errors(),
+                'responseCode'      => $this->failedStatus,
+            ]);
+       }   
+        # use type casting of user model and fetch data from database 
+        $userDetails = $this->user->where('mobile', $request->mobile)->first();
+        # data store into array 
+        $data[] = [
+            'category_id'       => (String)$userDetails->category_id ?? '',
+            'user_id'           => (String)$userDetails->id ?? '',
+            'name'              => $userDetails->name ?? '',
+            'gender'            => $userDetails->gender ?? '',
+            // 'mobile'            => $userDetails->mobile ?? '',
+            'email'             => $userDetails->email ?? '',
+            'status'            => $userDetails->status ?? '',
+            'dob'               => $userDetails->dob ?? '',
+            'anniversary'       => $userDetails->anniversary ?? '',
+            'comment'           => $userDetails->comment ?? '',
+            'created_at'        => $userDetails->created_at ?? '',
+            'updated_at'        => $userDetails->updated_at ?? '',
+        ];
+        # give response here 
+        if($userDetails)
+        {
+            return response()->json([
+                'responseMessage'   => 'Get Details',
+                'responseCode'      => $this->successStatus,
+                'result'            => $data
+            ]);
+        }
+    }
+    # ----- End here -----
+
+    # Add announcements api
+    public function CreateAnnouncement(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'category_id'       => 'required', 
+            'announce_title'    => 'required',
+            'type'              => 'required', 
+            'only_customer'     => 'required',
+            'only_whitelisted'  => 'required', 
+            'text_area'         => 'required', 
+            'stat_date'         => 'required', 
+            'end_date'          => 'required', 
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json([
+                'responseMessage'   => $validator->errors(),
+                'responseCode'      => $this->failedStatus,
+            ]);
+        }    
+
+        $announcement = $this->announcement::create($request->all());
+        if($announcement)
+        {
+            return response()->json([
+                'responseMessage'   => 'Created announcements Successfully',
+                'responseCode'      => $this->successStatus,
+            ]);
+        }else{
+            return response()->json([
+                'responseMessage'   => 'Something wrong ',
+                'responseCode'      => $this->failedStatus,
+            ]);
+        }    
+    }
+    # End here
+
+    public function AnnouncementDetails(Request $request)
+    {
+        # Get All Announcement Details
+        $AnnouncementDetails  = $this->announcement::get();
+        # count total Pecipients from announcement table
+        $TotalRecipientsCount = $this->announcement::count();
+        # count SMS or announcenemts from category id column
+        $SMSCount             = $this->announcement::where('category_id',1)->count();
+        # count whitelist Dues from only_customer column
+        $WhiltelistDues       = $this->announcement::where('only_customer',1)->count();
+
+        # find last updated list show only dates as ( created_at , updated_at) 
+        // $latest = DB::table('announcements')->latest()->first();
+
+        $announcementArray = [];
+        foreach ($AnnouncementDetails as $data ) 
+        {
+            $announcementArray[] = [
+                'id'                => $data->id ?? '',      
+                'type'              => $data->type ?? '',   
+                'SMS_Count'         => $SMSCount ?? '',
+                'Whitelist_Dues'    => $WhiltelistDues ?? '',
+                'total_recipients'  => $TotalRecipientsCount ?? '',
+                'stat_date'         => $data->stat_date ?? '',   
+                'end_date'          => $data->end_date ?? '',   
+                'Re_opening_date'   => $data->end_date ?? '',
+                'announce_title'    => $data->announce_title ?? '',   
+                'only_customer'     => $data->only_customer ?? '',   
+                'SMS_Preview'       => $data->text_area ?? '',
+            ];
+        }
+            return response()->json([
+                'responseMessage'   => 'Get Details of Announcement',
+                'responseCode'      => $this->successStatus,
+                'result'            => $announcementArray,
+                // 'latest'            => $latest ?? ''
+            ]);
+    }
+    # End here
+
+
+
+    # total announcement 
+     public function totalannouncemet(Request $request)
+    {   
+        # data from user table
+        $totalCustomer = $this->user::count();
+        # data from announcement 
+        $totalAnnouncemet = $this->announcement::count();
+        return response()->json([
+            'responseMessage'   => 'Count Total customers',
+            'responseCode'      => $this->successStatus,
+            'total_Customer'    => $totalCustomer,
+            'total_Announcemet' => $totalAnnouncemet,
+        ]);
+    }
+    # End here
+
 }

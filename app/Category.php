@@ -8,6 +8,6 @@ class Category extends Model
 {
     protected $table = 'categories';
     protected $fillable = [
-       'category','status'
+       'category','status', 'category_image'
       ];
 }
