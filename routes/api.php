@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 #routing for login 
 Route::post('login', 'API\UserController@login');
 # add and register new customer
-Route::post('AddnRegisternewCustomer', 'API\UserController@AddnRegisternewCustomer');
+Route::post('AddandRegisternewCustomer', 'API\UserController@AddandRegisternewCustomer');
 #routing for product
 Route::post('products', 'API\ProductController@createProduct');
 #routing for customer
@@ -48,7 +48,9 @@ Route::post('resendOtp', 'API\UserController@resendOtp');
 # call logs 
 Route::get('callLog', 'API\UserController@callLog');
 # upcoming birthday 
-Route::any('upcomingDateofBirth', 'API\UserController@upcomingDateofBirth');
+Route::get('upcomingBirthday', 'API\UserController@upcomingBirthday');
+# upcoming Aniversary
+Route::get('upcomingAnniversary', 'API\UserController@upcomingAnniversary');
 # add category 
 Route::post('addCategory', 'API\UserController@addCategory');
 # Category list 
@@ -61,3 +63,8 @@ Route::post('CreateAnnouncement', 'API\UserController@CreateAnnouncement');
 Route::get('AnnouncementDetails', 'API\UserController@AnnouncementDetails');
 # total Announcement
 Route::get('totalannouncemet', 'API\UserController@totalannouncemet');
+
+
+
+# check upcoming DOB
+Route::get('upcomingDOB', 'API\UserController@upcomingDOB');

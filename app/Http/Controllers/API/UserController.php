@@ -285,7 +285,7 @@ class UserController extends Controller
 
                     'id'          => (String)$loginuser->id ?? '',
                     'mobile'      => $loginuser->mobile ?? '',
-                    'otp'         => $otp ?? '',
+                    'resend_otp'  => $otp ?? '',
                 ];
                 # give response success
                 return response()->json([
@@ -362,7 +362,7 @@ class UserController extends Controller
 
 
     # ---Registration API ---
-    public function AddnRegisternewCustomer(Request $request) 
+    public function AddandRegisternewCustomer(Request $request) 
     {
         # request data from database 
         $name       = $request->name;
@@ -402,7 +402,7 @@ class UserController extends Controller
             ]);
         }elseif(empty($gender)) {
             return response()->json([
-                'responseMessage'   => 'please enter gender (m,f)',
+                'responseMessage'   => 'please enter gender (Male,Female)',
                 'responseCode'      => $this->failedStatus,
             ]);
         }elseif(empty($dob)) {
@@ -659,75 +659,124 @@ class UserController extends Controller
 
 
     #  Get upcoming Dirthday 
-    public function upcomingDateofBirth(Request $request)
+    public function upcomingBirthday(Request $request)
     {
-      
-        // $dateFromDB = $this->user::first();
-        // dd($dateFromDB->dob);
         #Current Date and Time
         # 1st method to find date
 
-        // $today = \Carbon\Carbon::now(); 
-        // $upcoming = \Carbon\Carbon::tomorrow();
-        // $lastDayofMonth = \Carbon\Carbon::parse($today)->endOfMonth()->toDateString();
-        // $upcomingDayofMonth = \Carbon\Carbon::parse($upcoming)->endOfMonth()->toDateString();
-        // dd($lastDayofMonth);
-        // dd($upcomingDayofMonth);
-
-        // if($dateFromDB)
-        //  {
-        //     return response()->json([
-        //         'responseMessage'   => 'Happy Birthday Dear',
-        //         'responseCode'      => $this->successStatus,
-        //         'dob'               => $dateFromDB
-        //     ]);
-        //  }
+        $currentDate = \Carbon\Carbon::now(); 
+        $upcoming = \Carbon\Carbon::tomorrow();
+        $startDateofMonth = \Carbon\Carbon::parse($currentDate)->startOfMonth()->toDateString();
+        $upcomingDayofMonth = \Carbon\Carbon::parse($upcoming)->endOfMonth()->toDateString();
 
         # Find the today date
-        $today_date = date('Y-m-d');
+        # $today_date = date('Y-m-d');
+
         # Find upcoming date into 7 days
-        $upcoming_date = date('Y-m-d', strtotime($today_date .'7days'));
-        # fet date from database and match today_date and upcoming_date and count  
-        // $findDate = $this->user->whereBetween('dob',[$today_date,$upcoming_date])->get()->count();
-        
+        # $upcoming_date = date('Y-m-d', strtotime($today_date .'7days'));
+
         # Get DOB from database and match today_date and upcoming_date 
-        $upcomingDOB = $this->user->whereBetween('dob',[$today_date,$upcoming_date])->get();
+        $upcomingDOB = $this->user->whereBetween('dob',[$startDateofMonth,$upcomingDayofMonth])->get();
+        # Count upcoming Birthday
+        $countBirthday = count($upcomingDOB);
         # define a empty array
         $Happybirthday = [];
         foreach ($upcomingDOB as $DateofBirth ) 
         {
             $Happybirthday[] = [
-                'id'    => $DateofBirth->id,
-                'name'  => $DateofBirth->name,
+                'customer_id'       => $DateofBirth->id,
+                'customer_name'     => $DateofBirth->name,
+                'customer_mobile'   => $DateofBirth->mobile,
+                'customer_email'    => $DateofBirth->email,
+                'customer_Dob'      => $DateofBirth->dob,
             ];
 
         }
-        # Get Anniversary Date from database and match today_date and upcoming_date 
-        $upcomingAnniversary = $this->user->whereBetween('anniversary',[$today_date,$upcoming_date])->get();
-        $HappyAnniversary = [];
-        foreach ($upcomingAnniversary as $anniversary) 
-        {
-            $HappyAnniversary[] = [
-                'id'    => $anniversary->id,
-                'name'  => $anniversary->name,
-            ];
-            
-        }
-        if($upcomingDOB && $upcomingAnniversary)
+        if($upcomingDOB)
         {
             return response()->json([
+                'upcoming_Birthday'    => $countBirthday,
                 'responseMessage'   => 'Happy Birthday Dear',
                 'responseCode'      => $this->successStatus,
-                'DOB'     => $upcomingDOB,
                 'happyBirthday'     => $Happybirthday,
-                'Anniversary'  => $upcomingAnniversary,
-                'happyAnniversary'  => $HappyAnniversary,
             ]);
         }
     }
     # End here
 
 
+     #  Get upcoming Dirthday 
+    public function upcomingAnniversary(Request $request)
+    {
+        #Current Date and Time
+        # 1st method to find date
+
+        $currentDate = \Carbon\Carbon::now(); 
+        $upcoming = \Carbon\Carbon::tomorrow();
+        $startDateofMonth = \Carbon\Carbon::parse($currentDate)->startOfMonth()->toDateString();
+        $upcomingDayofMonth = \Carbon\Carbon::parse($upcoming)->endOfMonth()->toDateString();
+        // dd($upcomingDayofMonth);
+
+        # Find the today date
+        # $today_date = date('Y-m-d');
+
+        # Find upcoming date into 7 days
+        # $upcoming_date = date('Y-m-d', strtotime($today_date .'7days'));
+        
+        # Get Anniversary Date from database and match today_date and upcoming_date 
+        $upcomingAnniversary = $this->user->whereBetween('anniversary',[$startDateofMonth,$upcomingDayofMonth])->get();
+        # Count Upcoming Anniversary
+        $countAnniverasry = count($upcomingAnniversary);
+        $HappyAnniversary = [];
+        foreach ($upcomingAnniversary as $anniversary) 
+        {
+            $HappyAnniversary[] = [
+                'customer_id'           => $anniversary->id,
+                'customer_name'         => $anniversary->name,
+                'customer_mobile'       => $anniversary->mobile,
+                'customer_email'        => $anniversary->email,
+                'customer_anniversary'  => $anniversary->anniversary,
+            ];
+            
+        }
+        if($upcomingAnniversary)
+        {
+            return response()->json([
+                'upcoming_Anniversary'  => $countAnniverasry,
+                'responseMessage'       => 'Happy Anniversary Dear',
+                'responseCode'          => $this->successStatus,
+                'happyAnniversary'      => $HappyAnniversary,
+            ]);
+        }
+    }
+    # End here
+
+
+
+      public function upcomingDOB()
+    {
+        $customerDOB = array();
+    
+        //if (request()->ajax()) {
+        $current_month = date("m");
+        $next_month = date("m", strtotime('+1 months'.$current_month));
+        $date = date("d");
+        $customerDOB = User::select('users.name','users.email')
+                                            ->where(function ($query) use($next_month, $current_month, $date) {
+                                                $query->whereMonth('users.dob', $next_month)
+                                                ->orWhereMonth('users.dob', $current_month);
+                                            })
+                                            //->where('dob','>=',date('Y-m-d'))
+                                            ->whereNotNull('dob')
+                                            ->get();
+        // dd($customerDOB);                                        
+
+                                            
+}  
+        
+   
+
+    # ------------ Api related to Category on Dashbord---------
 
     # API Add Category in database when show on Dashbord
     public function addCategory(Request $request)
@@ -784,6 +833,7 @@ class UserController extends Controller
     }
     # End here
 
+    # ------- End here Category API's ---------
 
         # ------ Get Profile/ account details Api ------
     public function UserOrCustomerDetails(Request $request)
@@ -826,9 +876,14 @@ class UserController extends Controller
             ]);
         }
     }
-    # ----- End here -----
+    # End here
 
-    # Add announcements api
+
+    
+    # ----------- API's related to Announcement --------- 
+    
+
+    # API for Add announcements api
     public function CreateAnnouncement(Request $request)
     {
         $validator = Validator::make($request->all(),[
@@ -866,6 +921,7 @@ class UserController extends Controller
     }
     # End here
 
+    # Announcement Details 
     public function AnnouncementDetails(Request $request)
     {
         # Get All Announcement Details
@@ -906,9 +962,7 @@ class UserController extends Controller
     }
     # End here
 
-
-
-    # total announcement 
+    # Total announcement 
      public function totalannouncemet(Request $request)
     {   
         # data from user table
@@ -924,4 +978,5 @@ class UserController extends Controller
     }
     # End here
 
+    #--------  End here Announcement API's ---------
 }
