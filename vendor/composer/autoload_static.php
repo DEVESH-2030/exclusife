@@ -501,6 +501,7 @@ class ComposerStaticInit238969f41fc263d7ba5bebb2a87f29c4
 
     public static $classMap = array (
         'App\\Admin' => __DIR__ . '/../..' . '/app/Admin.php',
+        'App\\Announcement' => __DIR__ . '/../..' . '/app/Announcement.php',
         'App\\CallLogs' => __DIR__ . '/../..' . '/app/CallLogs.php',
         'App\\Category' => __DIR__ . '/../..' . '/app/Category.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',

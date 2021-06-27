@@ -150,7 +150,7 @@ class UserController extends Controller
     //                 'responseCode'            =>  $this->failedStatus,
     //                ]);
     //         }
-    //            //genrating random otp
+    //            //genrating random otp 
     //     }
     // }
     # End here login
@@ -750,31 +750,6 @@ class UserController extends Controller
         }
     }
     # End here
-
-
-
-      public function upcomingDOB()
-    {
-        $customerDOB = array();
-    
-        //if (request()->ajax()) {
-        $current_month = date("m");
-        $next_month = date("m", strtotime('+1 months'.$current_month));
-        $date = date("d");
-        $customerDOB = User::select('users.name','users.email')
-                                            ->where(function ($query) use($next_month, $current_month, $date) {
-                                                $query->whereMonth('users.dob', $next_month)
-                                                ->orWhereMonth('users.dob', $current_month);
-                                            })
-                                            //->where('dob','>=',date('Y-m-d'))
-                                            ->whereNotNull('dob')
-                                            ->get();
-        // dd($customerDOB);                                        
-
-                                            
-}  
-        
-   
 
     # ------------ Api related to Category on Dashbord---------
 

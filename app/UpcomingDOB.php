@@ -8,11 +8,11 @@ class UpcomingDOB extends Model
 {
 	protected $table = 'upcoming_dobs';
     protected $fillable = [
-    	'user_id',
-    	'name',
-    	'today_date',
-    	'upcomingdate_date',
-    	'created_at',
-    	'updated_at',
-    ];
+					    	'user_id',
+					    	'name',
+					    	'today_date',
+					    	'upcomingdate_date',
+					    	'created_at',
+					    	'updated_at',
+					    ];
 }
